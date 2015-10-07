@@ -1,7 +1,7 @@
 """MARC holdings"""
 
-import datetime
 import calendar
+import datetime
 import re
 
 
@@ -37,7 +37,7 @@ def parse_date(date_string, end=False):
     :param end: Boolean; whether date represents the end of a range
     """
     months = [None, 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July',
-              'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.',]
+              'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.', ]
     parts = re.split('[: ]', date_string)
     text_year = parts[0]
     if '/' in text_year:
@@ -59,4 +59,3 @@ def parse_date(date_string, end=False):
         day = calendar.monthrange(year, month)[1]
 
     return datetime.date(year, month, day)
-

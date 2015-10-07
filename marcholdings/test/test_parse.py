@@ -1,6 +1,7 @@
 import datetime
-import marcholdings
 import unittest
+
+import marcholdings
 
 
 class TestDateParsing(unittest.TestCase):
@@ -21,11 +22,12 @@ class TestDateParsing(unittest.TestCase):
 
     def test_complex_dates(self):
         holding = marcholdings.Holding("v.2:no.3-v.6:no.5(2002:Mar.-2006:May")
-        self.assertEqual(holding.start_date, datetime.date(2002,3,1))
-        self.assertEqual(holding.end_date, datetime.date(2006,5,31))
+        self.assertEqual(holding.start_date, datetime.date(2002, 3, 1))
+        self.assertEqual(holding.end_date, datetime.date(2006, 5, 31))
 
     def test_with_days(self):
-        holding = marcholdings.Holding("v.2:no.3-v.6:no.5(2002:Mar. 2-2006:May 6")
+        holding = marcholdings.Holding(
+            "v.2:no.3-v.6:no.5(2002:Mar. 2-2006:May 6")
         self.assertEqual(holding.start_date, datetime.date(2002, 3, 2))
         self.assertEqual(holding.end_date, datetime.date(2006, 5, 6))
 
