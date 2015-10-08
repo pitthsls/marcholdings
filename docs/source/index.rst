@@ -19,6 +19,7 @@ API Docs
 .. autosummary::
 
    marcholdings.holding
+   marcholdings.helpers
 
 
 Indices and tables
