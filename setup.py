@@ -6,9 +6,6 @@ version = {}  # will be set by exec below
 with open('marcholdings/version.py', 'rb') as fp:
     exec(fp.read(), version)
 
-with open('README.rst') as readmefile:
-    readme = readmefile.read()
-
 setup(
     name='marcholdings',
     version=version['__version__'],
@@ -19,7 +16,7 @@ setup(
     maintainer_email='speargh@pitt.edu',
     url='http://www.github.com/pitthsls/pycounter',
     description='Parse NISO Z39.71 textual holdings',
-    long_description=readme,
+    long_description='',
     keywords='library MARC holdings Z39.71',
     classifiers=[
         'Development Status :: 3 - Alpha',
