@@ -46,6 +46,11 @@ class TestDateParsing(unittest.TestCase):
         self.assertEqual(holding.start_date, datetime.date(1840, 1, 1))
         self.assertEqual(holding.end_date, datetime.date(1842, 12, 31))
 
+    def test_seasons(self):
+        holding = marcholdings.Holding("v.1-2(1990:fall-2000:spring)")
+        self.assertEqual(holding.start_date, datetime.date(1990, 9, 1))
+        self.assertEqual(holding.end_date, datetime.date(2000, 6, 30))
+
     def test_ugly_comma(self):
         holding = marcholdings.Holding(
             "v.1:no.3,5-6(1982:May/June,Sept./Oct.-Nov./Dec.)-")

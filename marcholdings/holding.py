@@ -48,7 +48,13 @@ def parse_date(date_string, end=False):
         month_text = parts[1]
         if '/' in month_text:
             month_text = month_text.split('/')[1 if end else 0]
-        month = months.index(month_text)
+        try:
+            month = months.index(month_text)
+        except ValueError:
+            try:
+                month = season_to_month(month_text, end)
+            except ValueError:
+                raise ValueError("Bad month/season: %s" % month_text)
     elif end:
         month = 12
 
@@ -59,3 +65,18 @@ def parse_date(date_string, end=False):
         day = calendar.monthrange(year, month)[1]
 
     return datetime.date(year, month, day)
+
+
+def season_to_month(season_text, end):
+    """Convert a season name to the correct month
+
+    :param season_text: name of season
+    :param end: bool; whether we're looking for end of season
+    """
+    seasons = {
+        'fall': (9, 12),
+        'winter': (12, 3),
+        'spring': (3, 6),
+        'summer': (6, 9),
+    }
+    return seasons[season_text][end]
