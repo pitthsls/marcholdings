@@ -18,7 +18,7 @@ class Holding(object):
             date_part = text_holding.split('(')[1].split(')')[0]
         if text_holding.endswith('-'):
             self.end_date = None
-            self.start_date = parse_date(date_part)
+            self.start_date = parse_date(date_part.rstrip('-'))
         else:
             parts = date_part.split('-')
             start = parts[0]

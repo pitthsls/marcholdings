@@ -36,6 +36,11 @@ class TestDateParsing(unittest.TestCase):
         self.assertEqual(holding.start_date, datetime.date(1990, 2, 1))
         self.assertIsNone(holding.end_date)
 
+    def test_open_year_only(self):
+        holding = marcholdings.Holding("1990-")
+        self.assertEqual(holding.start_date, datetime.date(1990, 1, 1))
+        self.assertIsNone(holding.end_date)
+
     def test_multi_year_open(self):
         holding = marcholdings.Holding("1992/1996-")
         self.assertEqual(holding.start_date, datetime.date(1992, 1, 1))
