@@ -1,6 +1,7 @@
 """MARC holdings"""
 
 import calendar
+from collections import deque
 import datetime
 import re
 
@@ -80,3 +81,59 @@ def season_to_month(season_text, end):
         'summer': (6, 9),
     }
     return seasons[season_text][end]
+
+
+def parse_holdings(text_holdings):
+    """Parse a holdings statement, possibly with gaps, and return a list
+        of Holding objects.
+
+    :param text_holdings: textual holdings
+    """
+    if ',' not in text_holdings:
+        return [Holding(text_holdings)]
+    else:
+        return [Holding(th) for th in _comma_split(text_holdings)]
+
+
+def _comma_split(text_holdings):
+    """Split a holding with commas into parts"""
+    parts = []
+    holding_open = text_holdings.endswith('-')
+    paren_split = text_holdings.split('(')
+    if len(paren_split) > 1:
+        enums = paren_split[0]
+        chrons = paren_split[1].split(')')[0]
+    else:
+        chrons = paren_split[0]
+        enums = None
+    enumlist = []
+    if enums:
+        esplit = deque(re.split('([ .,:])', enums))
+        ec1 = ''.join([esplit.popleft(), esplit.popleft()])
+        accum = ec1
+        while esplit:
+            accum += esplit.popleft()
+            if not esplit or esplit[0] == ',':
+                enumlist.append(accum)
+                accum = ec1
+                if esplit:
+                    esplit.popleft()
+
+    chronlist = []
+    csplit = deque(re.split('([,:])', chrons))
+    caccum = ''
+    while csplit:
+        caccum += csplit.popleft()
+        if not csplit or csplit[0] == ',':
+            chronlist.append(caccum)
+            caccum = ''
+            if csplit:
+                csplit.popleft()
+    if enumlist:
+        for i, val in enumerate(enumlist):
+            parts.append("%s(%s)" % (val, chronlist[i]))
+    else:
+        parts = chronlist
+    if holding_open:
+        parts[-1] += "-"
+    return parts
