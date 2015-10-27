@@ -44,6 +44,14 @@ class TestDateParsingFunctional(unittest.TestCase):
         self.assertEqual(holdings[1].end_date, datetime.date(2001, 12, 31))
         self.assertEqual(len(holdings), 2)
 
+    def test_with_comma_date_only(self):
+        holdings = parse_holdings("1999,2001")
+        self.assertEqual(holdings[0].start_date, datetime.date(1999, 1, 1))
+        self.assertEqual(holdings[0].end_date, datetime.date(1999, 12, 31))
+        self.assertEqual(holdings[1].start_date, datetime.date(2001, 1, 1))
+        self.assertEqual(holdings[1].end_date, datetime.date(2001, 12, 31))
+        self.assertEqual(len(holdings), 2)
+
     def test_comma_ugly(self):
         holdings = parse_holdings(
             'v.1:no.3,5-6(1982:May/June,Sept./Oct.-Nov./Dec.)')
