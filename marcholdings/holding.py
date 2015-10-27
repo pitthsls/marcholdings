@@ -76,6 +76,7 @@ def season_to_month(season_text, end):
     """
     seasons = {
         'fall': (9, 12),
+        'autumn': (9, 12),
         'winter': (12, 3),
         'spring': (3, 6),
         'summer': (6, 9),
