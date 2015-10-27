@@ -80,7 +80,7 @@ def season_to_month(season_text, end):
         'spring': (3, 6),
         'summer': (6, 9),
     }
-    return seasons[season_text][end]
+    return seasons[season_text.lower()][end]
 
 
 def parse_holdings(text_holdings):
