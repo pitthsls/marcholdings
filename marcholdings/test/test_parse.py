@@ -61,3 +61,21 @@ class TestDateParsing(unittest.TestCase):
             "v.1:no.3,5-6(1982:May/June,Sept./Oct.-Nov./Dec.)-")
         self.assertEqual(holding.start_date, datetime.date(1982, 5, 1))
         self.assertIsNone(holding.end_date)
+
+    def test_volume_only_open(self):
+        holding = marcholdings.Holding(
+            "v.1-")
+        self.assertIsNone(holding.start_date)
+        self.assertIsNone(holding.end_date)
+
+    def test_volumes_only(self):
+        holding = marcholdings.Holding(
+            "v.1-7")
+        self.assertIsNone(holding.start_date)
+        self.assertIsNone(holding.end_date)
+
+    def test_volume_only(self):
+        holding = marcholdings.Holding(
+            "v.1")
+        self.assertIsNone(holding.start_date)
+        self.assertIsNone(holding.end_date)

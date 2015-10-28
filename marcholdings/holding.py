@@ -12,14 +12,17 @@ class Holding(object):
     :param text_holding: text of a non-gap holding
     """
     def __init__(self, text_holding):
-        date_part = None
-        if '(' not in text_holding:
+        date_part = ''
+        if '(' not in text_holding and text_holding[0:4].isdigit():
             date_part = text_holding
-        else:
+        elif '(' in text_holding:
             date_part = text_holding.split('(')[1].split(')')[0]
         if text_holding.endswith('-'):
             self.end_date = None
-            self.start_date = parse_date(date_part.rstrip('-'))
+            if date_part:
+                self.start_date = parse_date(date_part.rstrip('-'))
+            else:
+                self.start_date = None
         else:
             parts = date_part.split('-')
             start = parts[0]
@@ -27,8 +30,12 @@ class Holding(object):
             if (':' not in end and not end.isdigit() and
                     not all(x.isdigit() for x in end.split('/'))):
                 end = start[0:5] + end
-            self.start_date = parse_date(start)
-            self.end_date = parse_date(end, True)
+            if date_part == '':
+                self.start_date = None
+                self.end_date = None
+            else:
+                self.start_date = parse_date(start)
+                self.end_date = parse_date(end, True)
 
 
 def parse_date(date_string, end=False):
@@ -90,10 +97,7 @@ def parse_holdings(text_holdings):
 
     :param text_holdings: textual holdings
     """
-    if ',' not in text_holdings:
-        return [Holding(text_holdings)]
-    else:
-        return [Holding(th) for th in _comma_split(text_holdings)]
+    return [Holding(th) for th in _comma_split(text_holdings)]
 
 
 def _comma_split(text_holdings):
@@ -105,8 +109,12 @@ def _comma_split(text_holdings):
         enums = paren_split[0]
         chrons = paren_split[1].split(')')[0]
     else:
-        chrons = paren_split[0]
-        enums = None
+        if paren_split[0][0:4].isdigit():
+            chrons = paren_split[0]
+            enums = None
+        else:
+            enums = paren_split[0]
+            chrons = None
     enumlist = []
     if enums:
         esplit = deque(re.split('([ .,:])', enums))
@@ -121,20 +129,23 @@ def _comma_split(text_holdings):
                     esplit.popleft()
 
     chronlist = []
-    csplit = deque(re.split('([,:])', chrons))
-    caccum = ''
-    while csplit:
-        caccum += csplit.popleft()
-        if not csplit or csplit[0] == ',':
-            chronlist.append(caccum)
-            caccum = ''
-            if csplit:
-                csplit.popleft()
-    if enumlist:
+    if chrons:
+        csplit = deque(re.split('([,:])', chrons))
+        caccum = ''
+        while csplit:
+            caccum += csplit.popleft()
+            if not csplit or csplit[0] == ',':
+                chronlist.append(caccum)
+                caccum = ''
+                if csplit:
+                    csplit.popleft()
+    if enumlist and chronlist:
         for i, val in enumerate(enumlist):
             parts.append("%s(%s)" % (val, chronlist[i]))
-    else:
+    elif chronlist:
         parts = chronlist
+    else:
+        parts = enumlist
     if holding_open:
         parts[-1] += "-"
     return parts
