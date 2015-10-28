@@ -10,7 +10,6 @@ class TestDateParsingFunctional(unittest.TestCase):
         self.assertEqual(holdings[0].start_date, datetime.date(2010, 1, 1))
         self.assertIsNone(holdings[0].end_date)
 
-
     def test_single_year(self):
         holdings = parse_holdings("v.1(1990)")
         self.assertEqual(holdings[0].start_date, datetime.date(1990, 1, 1))
@@ -60,4 +59,3 @@ class TestDateParsingFunctional(unittest.TestCase):
         self.assertEqual(holdings[0].end_date, datetime.date(1982, 6, 30))
         self.assertEqual(holdings[1].start_date, datetime.date(1982, 9, 1))
         self.assertEqual(holdings[1].end_date, datetime.date(1982, 12, 31))
-
