@@ -59,3 +59,11 @@ class TestDateParsingFunctional(unittest.TestCase):
         self.assertEqual(holdings[0].end_date, datetime.date(1982, 6, 30))
         self.assertEqual(holdings[1].start_date, datetime.date(1982, 9, 1))
         self.assertEqual(holdings[1].end_date, datetime.date(1982, 12, 31))
+
+    def test_with_semicolon_simple(self):
+        holdings = parse_holdings("v.1;3(1999;2001)")
+        self.assertEqual(holdings[0].start_date, datetime.date(1999, 1, 1))
+        self.assertEqual(holdings[0].end_date, datetime.date(1999, 12, 31))
+        self.assertEqual(holdings[1].start_date, datetime.date(2001, 1, 1))
+        self.assertEqual(holdings[1].end_date, datetime.date(2001, 12, 31))
+        self.assertEqual(len(holdings), 2)

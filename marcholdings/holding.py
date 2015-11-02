@@ -117,12 +117,12 @@ def _comma_split(text_holdings):
             chrons = None
     enumlist = []
     if enums:
-        esplit = deque(re.split('([ .,:])', enums))
+        esplit = deque(re.split('([ .,:;])', enums))
         ec1 = ''.join([esplit.popleft(), esplit.popleft()])
         accum = ec1
         while esplit:
             accum += esplit.popleft()
-            if not esplit or esplit[0] == ',':
+            if not esplit or esplit[0] in ',;':
                 enumlist.append(accum)
                 accum = ec1
                 if esplit:
@@ -130,7 +130,7 @@ def _comma_split(text_holdings):
 
     chronlist = []
     if chrons:
-        csplit = deque(re.split('([,:])', chrons))
+        csplit = deque(re.split('([,:;])', chrons))
         caccum = ''
         deep = False
         while csplit:
@@ -138,7 +138,7 @@ def _comma_split(text_holdings):
             caccum += token
             if token == ':':
                 deep = True
-            if not csplit or csplit[0] == ',':
+            if not csplit or csplit[0] in ',;':
                 chronlist.append(caccum)
                 if not deep or (csplit and csplit[1].isnumeric()):
                     caccum = ''
