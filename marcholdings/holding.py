@@ -9,7 +9,13 @@ import re
 class Holding(object):
     """Holdings information from a MARC record
 
-    :param text_holding: text of a non-gap holding
+    Args:
+        text_holding (str): text of a non-gap holding
+
+    Attributes:
+        start_date (datetime.date): date holdings begin.
+        end_date (Optional[datetime.date]): date holdings end.
+
     """
     def __init__(self, text_holding):
         date_part = ''
@@ -39,10 +45,14 @@ class Holding(object):
 
 
 def parse_date(date_string, end=False):
-    """Parse a date string in Z39.71 format, return a datetime.date
+    """Parse a date string in Z39.71 format
 
-    :param date_string: date in Z39.71 format
-    :param end: Boolean; whether date represents the end of a range
+    Args:
+        date_string (str): date in Z39.71 format
+        end (bool): whether date represents the end of a range
+
+    Returns:
+        datetime.date: parsed date
     """
     months = [None, 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July',
               'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.', ]
@@ -78,8 +88,12 @@ def parse_date(date_string, end=False):
 def season_to_month(season_text, end):
     """Convert a season name to the correct month
 
-    :param season_text: name of season
-    :param end: bool; whether we're looking for end of season
+    Args:
+        season_text (str): name of season
+        end (bool): whether we're looking for end of season
+
+    Returns:
+        int: month number
     """
     seasons = {
         'fall': (9, 12),
@@ -92,10 +106,15 @@ def season_to_month(season_text, end):
 
 
 def parse_holdings(text_holdings):
-    """Parse a holdings statement, possibly with gaps, and return a list
-        of Holding objects.
+    """Parse a holdings statement.
+
+    Accepts a MARC holdings statement, possibly with gaps, and returns a list
+    of Holding objects.
 
     :param text_holdings: textual holdings
+
+    Returns:
+        List[Holding]: non-gap holdings objects
     """
     return [Holding(th) for th in _comma_split(text_holdings)]
 

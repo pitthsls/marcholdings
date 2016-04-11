@@ -9,6 +9,8 @@ marcholdings.holding module
 .. autoclass:: Holding
 
 .. autofunction:: parse_date
+.. autofunction:: season_to_month
+.. autofunction:: parse_holdings
 
 
 marcholdings.helpers module
