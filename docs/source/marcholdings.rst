@@ -5,6 +5,7 @@ marcholdings.holding module
 ---------------------------
 
 .. automodule:: marcholdings.holding
+   :members:
 
 .. autoclass:: Holding
 
