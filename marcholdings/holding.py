@@ -10,25 +10,36 @@ class Holding(object):
     """Holdings information from a MARC record
 
     Args:
-        text_holding (str): text of a non-gap holding
-
-    Attributes:
         start_date (datetime.date): date holdings begin.
         end_date (Optional[datetime.date]): date holdings end.
 
     """
-    def __init__(self, text_holding):
+    def __init__(self, start_date=None, end_date=None):
+        self.start_date = start_date
+        self.end_date = end_date
+
+    @classmethod
+    def from_text(cls, text_holding):
+        """Create a Holding from Z39.71 non-gap text holding
+
+        Args:
+            text_holding (str): text of a non-gap holding
+
+        Returns:
+            Holding: a Holding object
+
+        """
         date_part = ''
         if '(' not in text_holding and text_holding[0:4].isdigit():
             date_part = text_holding
         elif '(' in text_holding:
             date_part = text_holding.split('(')[1].split(')')[0]
         if text_holding.endswith('-'):
-            self.end_date = None
+            end_date = None
             if date_part:
-                self.start_date = parse_date(date_part.rstrip('-'))
+                start_date = parse_date(date_part.rstrip('-'))
             else:
-                self.start_date = None
+                start_date = None
         else:
             parts = date_part.split('-')
             start = parts[0]
@@ -37,12 +48,12 @@ class Holding(object):
                     not all(x.isdigit() for x in end.split('/'))):
                 end = start[0:5] + end
             if date_part == '':
-                self.start_date = None
-                self.end_date = None
+                start_date = None
+                end_date = None
             else:
-                self.start_date = parse_date(start)
-                self.end_date = parse_date(end, True)
-
+                start_date = parse_date(start)
+                end_date = parse_date(end, True)
+        return cls(start_date, end_date)
 
 def parse_date(date_string, end=False):
     """Parse a date string in Z39.71 format
@@ -111,16 +122,24 @@ def parse_holdings(text_holdings):
     Accepts a MARC holdings statement, possibly with gaps, and returns a list
     of Holding objects.
 
-    :param text_holdings: textual holdings
+    Args:
+        text_holdings (str): textual holdings
 
     Returns:
         List[Holding]: non-gap holdings objects
     """
-    return [Holding(th) for th in _comma_split(text_holdings)]
+    return [Holding.from_text(th) for th in _comma_split(text_holdings)]
 
 
 def _comma_split(text_holdings):
-    """Split a holding with commas into parts"""
+    """Split a holding with commas into parts.
+
+    Args:
+        text_holdings (str): textual holding
+
+    Returns:
+        List[str]: holding text without commas, separated
+    """
     parts = []
     holding_open = text_holdings.endswith('-')
     paren_split = text_holdings.split('(')
