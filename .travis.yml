@@ -13,7 +13,6 @@ python:
 
 install:
   - pip install .
-  - pip install git+https://github.com/PyCQA/pep8.git
   - pip install pytest
   - pip install pytest-cov
   - pip install coveralls
@@ -23,7 +22,7 @@ before_script:
   - "flake8 pycounter"
 
 script:
-  py.test --cov=marcholdings marcholdings/test
+  pytest --cov=marcholdings marcholdings/test
 
 after_success:
   coveralls
