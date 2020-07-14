@@ -2,7 +2,7 @@
 from collections import namedtuple
 import re
 
-SplitEnum = namedtuple('SplitEnum', ['caption', 'enumeration'])
+SplitEnum = namedtuple("SplitEnum", ["caption", "enumeration"])
 
 
 def split_enum(enumeration):
@@ -10,12 +10,12 @@ def split_enum(enumeration):
 
     :param enumeration: the textual enumeration to be split
     """
-    parts = ['', enumeration]
-    if '.' in enumeration[1:-1]:
-        parts = enumeration.split('.', 1)
-        parts[0] += '.'
-    elif ' ' in enumeration:
-        parts = enumeration.split(' ', 1)
+    parts = ["", enumeration]
+    if "." in enumeration[1:-1]:
+        parts = enumeration.split(".", 1)
+        parts[0] += "."
+    elif " " in enumeration:
+        parts = enumeration.split(" ", 1)
         if parts[0][0].isdigit():
             parts.reverse()
             parts[1] = trim_ordinal(parts[1])
@@ -27,4 +27,4 @@ def trim_ordinal(ordinal):
 
     :param ordinal: ordinal number to trim
     """
-    return re.sub(r'(st|nd|rd|th)$', '', ordinal)
+    return re.sub(r"(st|nd|rd|th)$", "", ordinal)

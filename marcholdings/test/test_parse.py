@@ -27,7 +27,8 @@ class TestDateParsing(unittest.TestCase):
 
     def test_with_days(self):
         holding = marcholdings.Holding.from_text(
-            "v.2:no.3-v.6:no.5(2002:Mar. 2-2006:May 6")
+            "v.2:no.3-v.6:no.5(2002:Mar. 2-2006:May 6"
+        )
         self.assertEqual(holding.start_date, datetime.date(2002, 3, 2))
         self.assertEqual(holding.end_date, datetime.date(2006, 5, 6))
 
@@ -58,24 +59,22 @@ class TestDateParsing(unittest.TestCase):
 
     def test_ugly_comma(self):
         holding = marcholdings.Holding.from_text(
-            "v.1:no.3,5-6(1982:May/June,Sept./Oct.-Nov./Dec.)-")
+            "v.1:no.3,5-6(1982:May/June,Sept./Oct.-Nov./Dec.)-"
+        )
         self.assertEqual(holding.start_date, datetime.date(1982, 5, 1))
         self.assertIsNone(holding.end_date)
 
     def test_volume_only_open(self):
-        holding = marcholdings.Holding.from_text(
-            "v.1-")
+        holding = marcholdings.Holding.from_text("v.1-")
         self.assertIsNone(holding.start_date)
         self.assertIsNone(holding.end_date)
 
     def test_volumes_only(self):
-        holding = marcholdings.Holding.from_text(
-            "v.1-7")
+        holding = marcholdings.Holding.from_text("v.1-7")
         self.assertIsNone(holding.start_date)
         self.assertIsNone(holding.end_date)
 
     def test_volume_only(self):
-        holding = marcholdings.Holding.from_text(
-            "v.1")
+        holding = marcholdings.Holding.from_text("v.1")
         self.assertIsNone(holding.start_date)
         self.assertIsNone(holding.end_date)

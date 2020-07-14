@@ -29,8 +29,7 @@ class TestDateParsingFunctional(unittest.TestCase):
         self.assertEqual(len(holdings), 1)
 
     def test_with_days(self):
-        holdings = parse_holdings(
-            "v.2:no.3-v.6:no.5(2002:Mar. 2-2006:May 6")
+        holdings = parse_holdings("v.2:no.3-v.6:no.5(2002:Mar. 2-2006:May 6")
         self.assertEqual(holdings[0].start_date, datetime.date(2002, 3, 2))
         self.assertEqual(holdings[0].end_date, datetime.date(2006, 5, 6))
         self.assertEqual(len(holdings), 1)
@@ -52,8 +51,7 @@ class TestDateParsingFunctional(unittest.TestCase):
         self.assertEqual(len(holdings), 2)
 
     def test_comma_ugly(self):
-        holdings = parse_holdings(
-            'v.1:no.3,5-6(1982:May/June,Sept./Oct.-Nov./Dec.)')
+        holdings = parse_holdings("v.1:no.3,5-6(1982:May/June,Sept./Oct.-Nov./Dec.)")
         self.assertEqual(len(holdings), 2)
         self.assertEqual(holdings[0].start_date, datetime.date(1982, 5, 1))
         self.assertEqual(holdings[0].end_date, datetime.date(1982, 6, 30))
