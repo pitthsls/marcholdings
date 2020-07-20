@@ -1,4 +1,3 @@
-from __future__ import with_statement
 from setuptools import setup, find_packages
 
 version = {}  # will be set by exec below
@@ -19,10 +18,10 @@ setup(
     long_description="",
     keywords="library MARC holdings Z39.71",
     classifiers=[
-        'Development Status :: 4 - Beta',
-        'License :: OSI Approved :: MIT License',
-        'Intended Audience :: Developers',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        ],
-    )
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: MIT License",
+        "Intended Audience :: Developers",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+    ],
+)

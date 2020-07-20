@@ -78,3 +78,8 @@ class TestDateParsing(unittest.TestCase):
         holding = marcholdings.Holding.from_text("v.1")
         self.assertIsNone(holding.start_date)
         self.assertIsNone(holding.end_date)
+
+    def test_parens(self):
+        holding = marcholdings.Holding.from_text("(1998-2006)")
+        self.assertEqual(holding.start_date, datetime.date(1998, 1, 1))
+        self.assertEqual(holding.end_date, datetime.date(2006, 12, 31))
