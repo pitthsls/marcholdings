@@ -6,6 +6,7 @@ import datetime
 import re
 
 from marcholdings.helpers import split_whole_enum
+from marcholdings.constants import MONTHS
 
 
 class Holding(object):
@@ -72,7 +73,6 @@ class Holding(object):
                 start_date = parse_date(start)
                 end_date = parse_date(end, True)
 
-        start_volume = end_volume = start_issue = end_issue = None
         enum_part = ""
         if "(" in text_holding:
             enum_part = text_holding.split("(")[0]
@@ -86,6 +86,41 @@ class Holding(object):
             start_date, end_date, start_volume, start_issue, end_volume, end_issue
         )
 
+    def __str__(self):
+        """Produces a z39.71 textual holding from a Holding object."""
+        parts = []
+        if self.start_volume:
+            parts.append("v.")
+            parts.append(self.start_volume)
+            if self.start_issue:
+                parts.append(":")
+        if self.start_issue:
+            parts.append("no.")
+            parts.append(self.start_issue)
+        if self.end_volume or self.end_issue:
+            parts.append("-")
+            if self.end_volume:
+                parts.append(self.end_volume)
+                if self.end_issue:
+                    parts.append(":")
+            if self.end_issue:
+                parts.append(self.end_issue)
+        has_enum = bool(parts)
+        if has_enum:
+            parts.append("(")
+        if self.start_date:
+            parts.append(str(self.start_date.year))
+            if self.end_date and self.end_date.year != self.start_date.year:
+                parts.append("-")
+                parts.append(str(self.end_date.year))
+
+        if has_enum:
+            parts.append(")")
+
+        if not any((self.end_date, self.end_volume, self.end_issue)):
+            parts.append("-")
+        return "".join(parts)
+
 
 def parse_date(date_string, end=False):
     """Parse a date string in Z39.71 format
@@ -97,21 +132,7 @@ def parse_date(date_string, end=False):
     Returns:
         datetime.date: parsed date
     """
-    months = [
-        None,
-        "Jan.",
-        "Feb.",
-        "Mar.",
-        "Apr.",
-        "May",
-        "June",
-        "July",
-        "Aug.",
-        "Sept.",
-        "Oct.",
-        "Nov.",
-        "Dec.",
-    ]
+
     parts = re.split("[: ]", date_string)
     text_year = parts[0]
     if "/" in text_year:
@@ -123,7 +144,7 @@ def parse_date(date_string, end=False):
         if "/" in month_text:
             month_text = month_text.split("/")[1 if end else 0]
         try:
-            month = months.index(month_text)
+            month = MONTHS.index(month_text)
         except ValueError:
             try:
                 month = season_to_month(month_text, end)
