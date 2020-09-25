@@ -78,9 +78,17 @@ class Holding(object):
             enum_part = text_holding.split("(")[0]
         elif not text_holding[0:4].isdigit():
             enum_part = text_holding
-        start_enum, _, end_enum = enum_part.partition("-")
+        start_enum, separator, end_enum = enum_part.partition("-")
         start_volume, start_issue = split_whole_enum(start_enum)
-        end_volume, end_issue = split_whole_enum(end_enum)
+        if "-" not in text_holding:
+            end_volume, end_issue = start_volume, start_issue
+        elif (
+            ":" in start_enum and ":" not in end_enum and not text_holding.endswith("-")
+        ):
+            end_volume = start_volume
+            end_issue = end_enum
+        else:
+            end_volume, end_issue = split_whole_enum(end_enum)
 
         return cls(
             start_date, end_date, start_volume, start_issue, end_volume, end_issue
@@ -97,24 +105,32 @@ class Holding(object):
         if self.start_issue:
             parts.append("no.")
             parts.append(self.start_issue)
-        if self.end_volume or self.end_issue:
+        if (self.end_volume and self.end_volume != self.start_volume) or self.end_issue:
             parts.append("-")
-            if self.end_volume:
+            if self.end_volume and self.end_volume != self.start_volume:
+                if ":" in parts:
+                    parts.append("v.")
                 parts.append(self.end_volume)
                 if self.end_issue:
                     parts.append(":")
             if self.end_issue:
+                if ":" in parts[:-1] and self.start_volume != self.end_volume:
+                    parts.append("no.")
                 parts.append(self.end_issue)
         has_enum = bool(parts)
-        if has_enum:
+        if has_enum and self.start_date:
             parts.append("(")
         if self.start_date:
             parts.append(str(self.start_date.year))
+            if self.start_date.month > 1:
+                parts.append(f":{MONTHS[self.start_date.month]}")
             if self.end_date and self.end_date.year != self.start_date.year:
                 parts.append("-")
                 parts.append(str(self.end_date.year))
+                if self.end_date.month < 12:
+                    parts.append(f":{MONTHS[self.end_date.month]}")
 
-        if has_enum:
+        if has_enum and self.start_date:
             parts.append(")")
 
         if not any((self.end_date, self.end_volume, self.end_issue)):

@@ -17,6 +17,13 @@ class TestDateParsing(unittest.TestCase):
         self.assertEqual(holding.start_date, datetime.date(1990, 1, 1))
         self.assertEqual(holding.end_date, datetime.date(1990, 12, 31))
 
+    def test_partial_volume(self):
+        holding = marcholdings.Holding.from_text("v.1:no.1-3")
+        self.assertEqual(holding.start_volume, "1")
+        self.assertEqual(holding.end_volume, "1")
+        self.assertEqual(holding.start_issue, "1")
+        self.assertEqual(holding.end_issue, "3")
+
     def test_partial_year(self):
         holding = marcholdings.Holding.from_text("v.1:no.2-4(1990:Feb.-Apr.)")
         self.assertEqual(holding.start_date, datetime.date(1990, 2, 1))
@@ -93,6 +100,7 @@ class TestDateParsing(unittest.TestCase):
         holding = marcholdings.Holding.from_text("v.1")
         self.assertIsNone(holding.start_date)
         self.assertIsNone(holding.end_date)
+        self.assertEqual(holding.end_volume, "1")
 
     def test_parens(self):
         holding = marcholdings.Holding.from_text("(1998-2006)")
