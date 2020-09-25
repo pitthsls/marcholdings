@@ -9,6 +9,8 @@ class TestDateParsing(unittest.TestCase):
         holding = marcholdings.Holding.from_text("v.1(2010)-")
         self.assertEqual(holding.start_date, datetime.date(2010, 1, 1))
         self.assertIsNone(holding.end_date)
+        self.assertEqual(holding.start_volume, "1")
+        self.assertEqual(holding.end_volume, "")
 
     def test_single_year(self):
         holding = marcholdings.Holding.from_text("v.1(1990)")
@@ -24,6 +26,19 @@ class TestDateParsing(unittest.TestCase):
         holding = marcholdings.Holding.from_text("v.2:no.3-v.6:no.5(2002:Mar.-2006:May")
         self.assertEqual(holding.start_date, datetime.date(2002, 3, 1))
         self.assertEqual(holding.end_date, datetime.date(2006, 5, 31))
+        self.assertEqual(holding.start_volume, "2")
+        self.assertEqual(holding.end_volume, "6")
+        self.assertEqual(holding.start_issue, "3")
+        self.assertEqual(holding.end_issue, "5")
+
+    def test_complex_dates_june(self):
+        holding = marcholdings.Holding.from_text("v.2:no.3-v.6:no.5(2002:June-2006:May")
+        self.assertEqual(holding.start_date, datetime.date(2002, 6, 1))
+        self.assertEqual(holding.end_date, datetime.date(2006, 5, 31))
+        self.assertEqual(holding.start_volume, "2")
+        self.assertEqual(holding.end_volume, "6")
+        self.assertEqual(holding.start_issue, "3")
+        self.assertEqual(holding.end_issue, "5")
 
     def test_with_days(self):
         holding = marcholdings.Holding.from_text(

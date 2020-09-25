@@ -5,6 +5,7 @@ from collections import deque
 import datetime
 import re
 
+from marcholdings.helpers import split_whole_enum
 
 class Holding(object):
     """Holdings information from a MARC record
@@ -15,9 +16,13 @@ class Holding(object):
 
     """
 
-    def __init__(self, start_date=None, end_date=None):
+    def __init__(self, start_date=None, end_date=None, start_volume=None, start_issue=None, end_volume=None, end_issue=None):
         self.start_date = start_date
         self.end_date = end_date
+        self.start_volume = start_volume
+        self.end_volume = end_volume
+        self.start_issue = start_issue
+        self.end_issue = end_issue
 
     @classmethod
     def from_text(cls, text_holding):
@@ -57,7 +62,18 @@ class Holding(object):
             else:
                 start_date = parse_date(start)
                 end_date = parse_date(end, True)
-        return cls(start_date, end_date)
+
+        start_volume = end_volume = start_issue = end_issue = None
+        enum_part = ""
+        if "(" in text_holding:
+            enum_part = text_holding.split("(")[0]
+        elif not text_holding[0:4].isdigit():
+            enum_part = text_holding
+        start_enum, _, end_enum = enum_part.partition("-")
+        start_volume, start_issue = split_whole_enum(start_enum)
+        end_volume, end_issue = split_whole_enum(end_enum)
+
+        return cls(start_date, end_date, start_volume, start_issue, end_volume, end_issue)
 
 
 def parse_date(date_string, end=False):

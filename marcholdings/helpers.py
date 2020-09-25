@@ -5,6 +5,12 @@ import re
 SplitEnum = namedtuple("SplitEnum", ["caption", "enumeration"])
 
 
+def split_whole_enum(enumeration):
+    """split a whole enum into volume and issue."""
+    vol, _, iss = enumeration.partition(":")
+    return tuple(split_enum(x).enumeration for x in (vol, iss))
+
+
 def split_enum(enumeration):
     """split a textual enumeration into its caption and enumeration parts
 

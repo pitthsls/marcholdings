@@ -23,3 +23,7 @@ class TestCaptions(unittest.TestCase):
         splitparts = split_enum("1st ed.")
         self.assertEqual(splitparts.caption, "ed.")
         self.assertEqual(splitparts.enumeration, "1")
+
+    def test_no_caption(self):
+        splitparts = split_enum("2")
+        self.assertEqual(splitparts.enumeration, "2")
