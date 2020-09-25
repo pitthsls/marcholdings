@@ -7,6 +7,7 @@ import re
 
 from marcholdings.helpers import split_whole_enum
 
+
 class Holding(object):
     """Holdings information from a MARC record
 
@@ -16,7 +17,15 @@ class Holding(object):
 
     """
 
-    def __init__(self, start_date=None, end_date=None, start_volume=None, start_issue=None, end_volume=None, end_issue=None):
+    def __init__(
+        self,
+        start_date=None,
+        end_date=None,
+        start_volume=None,
+        start_issue=None,
+        end_volume=None,
+        end_issue=None,
+    ):
         self.start_date = start_date
         self.end_date = end_date
         self.start_volume = start_volume
@@ -73,7 +82,9 @@ class Holding(object):
         start_volume, start_issue = split_whole_enum(start_enum)
         end_volume, end_issue = split_whole_enum(end_enum)
 
-        return cls(start_date, end_date, start_volume, start_issue, end_volume, end_issue)
+        return cls(
+            start_date, end_date, start_volume, start_issue, end_volume, end_issue
+        )
 
 
 def parse_date(date_string, end=False):
