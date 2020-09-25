@@ -12,10 +12,6 @@ install:
   - pip install pytest
   - pip install pytest-cov
   - pip install coveralls
-  - pip install flake8
-
-before_script:
-  - "flake8 marcholdings"
 
 script:
   pytest --cov=marcholdings marcholdings/test
